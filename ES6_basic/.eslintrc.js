@@ -19,7 +19,8 @@ module.exports = {
     },
     plugins: ['jest'],
     rules: {
-        'indent': 'off',
+        indent: [2, "tab"],
+        "no-tabs": 0,
       'no-console': 'off',
       'no-shadow': 'off',
       'no-restricted-syntax': [
