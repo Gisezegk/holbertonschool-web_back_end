@@ -1,4 +1,4 @@
-
+import stylisticJs from '@stylistic/eslint-plugin-js'
 module.exports = {
     env: {
       browser: false,
@@ -17,7 +17,9 @@ module.exports = {
       ecmaVersion: 2018,
       sourceType: 'module',
     },
-    plugins: ['jest'],
+    plugins: {
+        '@stylistic/js': stylisticJs,
+    },
     rules: {
         indent: [2, "tab"],
         "no-tabs": 0,
