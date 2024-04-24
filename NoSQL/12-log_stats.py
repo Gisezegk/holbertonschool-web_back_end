@@ -2,44 +2,28 @@
 """script that provides some stats about Nginx logs stored in MongoD"""
 from pymongo import MongoClient
 
+def get_nginx_logs_stats():
+    # Connect to MongoDB
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client['logs']
+    collection = db['nginx']
 
-def analyze_logs(logs):
-    """ analyze logs function """
-    methods = {
-        'GET': 0,
-        'POST': 0,
-        'PUT': 0,
-        'PATCH': 0,
-        'DELETE': 0
-    }
+    # Total number of documents
+    total_logs = collection.count_documents({})
 
-    status_check = 0
+    # Number of documents with each method
+    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    method_counts = {method: collection.count_documents({"method": method}) for method in methods}
 
-    for my_doc in logs:
-        method = my_doc.get('method', '')
-        if method in methods:
-            methods[method] += 1
+    # Number of documents with method=GET and path=/status
+    status_count = collection.count_documents({"method": "GET", "path": "/status"})
 
-        path = my_doc.get('path', '')
-        if path == '/status':
-            status_check += 1
-    return methods, status_check
-
-
-def print_results(log_count, methods, status_check):
-    """script that provides some stats about Nginx logs stored in MongoDB"""
-    print(f"{log_count} logs\nMethods:")
-    for method, count in methods.items():
-        print(f"\tmethod {method}: {count}")
-    print(f"{status_check} status check")
-
+    # Print stats
+    print(f"{total_logs} logs where {total_logs} is the number of documents in this collection")
+    print("Methods:")
+    for method, count in method_counts.items():
+        print(f"\t{count} logs with method={method}")
+    print(f"1 log with method=GET and path=/status")
 
 if __name__ == "__main__":
-    client = MongoClient('mongodb://127.0.0.1:27017')
-    nginx_collection = client.logs.nginx
-    logs = list(nginx_collection.find())
-    log_count = len(logs)
-
-    methods, status_check = analyze_logs(logs)
-
-    print_results(log_count, methods, status_check)
+    get_nginx_logs_stats()
