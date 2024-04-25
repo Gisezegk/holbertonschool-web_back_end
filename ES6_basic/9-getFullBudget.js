@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-enable */
 import getBudgetObject from "./7-getBudgetObject.js";
 /* eslint-enable */
 
